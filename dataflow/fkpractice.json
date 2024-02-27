@@ -157,7 +157,7 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join5",
 				"join5 alterRow() ~> AlterRow1",
-				"AlterRow1 sink(allowSchemaDrift: true,",
+				"join5 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
