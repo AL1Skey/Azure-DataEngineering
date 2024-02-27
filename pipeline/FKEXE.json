@@ -76,7 +76,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "getCombined",
+						"referenceName": "combined",
 						"type": "DatasetReference"
 					}
 				],
