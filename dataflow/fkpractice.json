@@ -1,0 +1,196 @@
+{
+	"name": "fkpractice",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "mainfk",
+						"type": "DatasetReference"
+					},
+					"name": "main"
+				},
+				{
+					"dataset": {
+						"referenceName": "hargafk",
+						"type": "DatasetReference"
+					},
+					"name": "harga"
+				},
+				{
+					"dataset": {
+						"referenceName": "segmentfk",
+						"type": "DatasetReference"
+					},
+					"name": "segment"
+				},
+				{
+					"dataset": {
+						"referenceName": "negara",
+						"type": "DatasetReference"
+					},
+					"name": "negara"
+				},
+				{
+					"dataset": {
+						"referenceName": "harifk",
+						"type": "DatasetReference"
+					},
+					"name": "hari"
+				},
+				{
+					"dataset": {
+						"referenceName": "namabulanfk",
+						"type": "DatasetReference"
+					},
+					"name": "namabulan"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "join4"
+				},
+				{
+					"name": "join5"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          segid as string,",
+				"          natid as string,",
+				"          product as string,",
+				"          priceid as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> main",
+				"source(output(",
+				"          priceid as string,",
+				"          discount_band as string,",
+				"          units_sold as string,",
+				"          manufacturing_price as string,",
+				"          sale_price as string,",
+				"          gross_sales as string,",
+				"          discounts as string,",
+				"          sales as string,",
+				"          cogs as string,",
+				"          profit as string,",
+				"          date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> harga",
+				"source(output(",
+				"          segid as string,",
+				"          segment as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> segment",
+				"source(output(",
+				"          natid as string,",
+				"          nationality as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> negara",
+				"source(output(",
+				"          date as string,",
+				"          month_number as string,",
+				"          year as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> hari",
+				"source(output(",
+				"          month_number as string,",
+				"          month_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> namabulan",
+				"main, harga join(main@priceid == harga@priceid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1, segment join(main@segid == segment@segid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2, negara join(main@natid == negara@natid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"hari, namabulan join(hari@month_number == namabulan@month_number,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join4",
+				"join3, join4 join(harga@date == hari@date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join5",
+				"join5 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          segid = main@segid,",
+				"          natid = main@natid,",
+				"          product,",
+				"          priceid = main@priceid,",
+				"          priceid = harga@priceid,",
+				"          discount_band,",
+				"          units_sold,",
+				"          manufacturing_price,",
+				"          sale_price,",
+				"          gross_sales,",
+				"          discounts,",
+				"          sales,",
+				"          cogs,",
+				"          profit,",
+				"          date = harga@date,",
+				"          segid = segment@segid,",
+				"          segment,",
+				"          natid = negara@natid,",
+				"          nationality,",
+				"          date = hari@date,",
+				"          month_number = hari@month_number,",
+				"          year,",
+				"          month_number = namabulan@month_number,",
+				"          month_name",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

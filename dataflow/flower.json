@@ -1,0 +1,56 @@
+{
+	"name": "flower",
+	"properties": {
+		"description": "Data Flow Playground",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "tester"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "delhi_dataset",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "sort1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          State_Union_Territory as string,",
+				"          Year as string,",
+				"          Power_Requirement_Net_Crore_Units as string,",
+				"          Availability_Of_Power_Net_Crore_Units as string,",
+				"          Availability_Of_Power_Per_Capita_kiloWatt_Hour as string,",
+				"          Installed_Power_Capacity_MegaWatt as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> tester",
+				"tester filter(State_Union_Territory=='Delhi') ~> filter1",
+				"filter1 sort(asc(Installed_Power_Capacity_MegaWatt, true)) ~> sort1",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

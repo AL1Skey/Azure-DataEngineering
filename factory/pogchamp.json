@@ -1,0 +1,9 @@
+{
+	"name": "pogchamp",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "aa0dda93-f5a1-4a43-bbf7-738212bef9f5",
+		"tenantId": "d79eefaf-6cd4-404a-a76d-aa88e2b570e3"
+	}
+}

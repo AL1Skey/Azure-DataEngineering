@@ -1,0 +1,137 @@
+{
+	"name": "src_to_sql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "State/Union Territory",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "State_Union_Territory",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Year",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Year",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Power_Requirement_Net_Crore_Units",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Power_Requirement_Net_Crore_Units",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Availability_Of_Power_Net_Crore_Units",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Availability_Of_Power_Net_Crore_Units",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Availability_Of_Power_Per_Capita_kiloWatt-Hour",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Availability_Of_Power_Per_Capita_kiloWatt_Hour",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Installed_Power_Capacity_MegaWatt",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Installed_Power_Capacity_MegaWatt",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-02-24T09:56:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

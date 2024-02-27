@@ -1,0 +1,42 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "State_Union_Territory",
+				"type": "varchar"
+			},
+			{
+				"name": "Year",
+				"type": "varchar"
+			},
+			{
+				"name": "Power_Requirement_Net_Crore_Units",
+				"type": "varchar"
+			},
+			{
+				"name": "Availability_Of_Power_Net_Crore_Units",
+				"type": "varchar"
+			},
+			{
+				"name": "Availability_Of_Power_Per_Capita_kiloWatt_Hour",
+				"type": "varchar"
+			},
+			{
+				"name": "Installed_Power_Capacity_MegaWatt",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Power_Statistics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
