@@ -167,6 +167,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "combined.csv",
 						"container": "output"
 					},
 					"columnDelimiter": ",",
@@ -493,6 +494,33 @@
 						"type": "AzureBlobStorageLocation",
 						"fileName": "dataset.csv",
 						"container": "alko"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/getCombined')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -955,58 +983,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
 				"[concat(variables('factoryId'), '/datasets/delhi_dataset')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FKEXE')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "fkpractice",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "fkpractice",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"main": {},
-									"harga": {},
-									"segment": {},
-									"negara": {},
-									"hari": {},
-									"namabulan": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-02-27T10:10:18Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/fkpractice')]"
 			]
 		}
 	]
