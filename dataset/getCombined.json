@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "combined.csv",
 				"container": "output"
 			},
 			"columnDelimiter": ",",
