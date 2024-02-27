@@ -49,9 +49,9 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "AzureSqlTable2",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "AzureSqlDatabase1",
+						"type": "LinkedServiceReference"
 					},
 					"name": "sink1"
 				}
@@ -159,40 +159,17 @@
 				"join5 alterRow() ~> AlterRow1",
 				"AlterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:true,",
-				"     insertable:true,",
-				"     updateable:true,",
-				"     upsertable:true,",
 				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: '',",
+				"     tableName: '',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          segid = main@segid,",
-				"          natid = main@natid,",
-				"          product,",
-				"          priceid = main@priceid,",
-				"          priceid = harga@priceid,",
-				"          discount_band,",
-				"          units_sold,",
-				"          manufacturing_price,",
-				"          sale_price,",
-				"          gross_sales,",
-				"          discounts,",
-				"          sales,",
-				"          cogs,",
-				"          profit,",
-				"          date = harga@date,",
-				"          segid = segment@segid,",
-				"          segment,",
-				"          natid = negara@natid,",
-				"          nationality,",
-				"          date = hari@date,",
-				"          month_number = hari@month_number,",
-				"          year,",
-				"          month_number = namabulan@month_number,",
-				"          month_name",
-				"     )) ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
