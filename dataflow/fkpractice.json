@@ -71,9 +71,6 @@
 				},
 				{
 					"name": "join5"
-				},
-				{
-					"name": "AlterRow1"
 				}
 			],
 			"scriptLines": [
@@ -156,7 +153,6 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join5",
-				"join5 alterRow() ~> AlterRow1",
 				"join5 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
