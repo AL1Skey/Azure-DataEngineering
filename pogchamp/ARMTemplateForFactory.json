@@ -127,6 +127,43 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "cleaner",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "cleaner",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"datatypemod": {},
+									"Save": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -138,7 +175,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/joiner')]",
 				"[concat(variables('factoryId'), '/datasets/getCombined')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]",
+				"[concat(variables('factoryId'), '/dataflows/cleaner')]"
 			]
 		},
 		{
@@ -911,6 +949,114 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cleaner')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "remove unnecessary columns, modified the data type and add columns",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "datatypemod",
+							"description": "Modifies Data Type to expected data type"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "Save"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          segid as string,",
+						"          natid as string,",
+						"          product as string,",
+						"          priceid as string,",
+						"          discount_band as string,",
+						"          units_sold as integer,",
+						"          manufacturing_price as float,",
+						"          sale_price as float,",
+						"          gross_sales as float,",
+						"          discounts as float,",
+						"          sales as float,",
+						"          cogs as float,",
+						"          profit as float,",
+						"          date as date,",
+						"          segment as string,",
+						"          nationality as string,",
+						"          month_number as integer,",
+						"          year as integer,",
+						"          month_name as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> datatypemod",
+						"datatypemod derive(total_price = manufacturing_price + sale_price) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          segid,",
+						"          natid,",
+						"          product,",
+						"          priceid,",
+						"          discount_band,",
+						"          units_sold,",
+						"          manufacturing_price,",
+						"          sale_price,",
+						"          gross_sales,",
+						"          discounts,",
+						"          sales,",
+						"          cogs,",
+						"          profit,",
+						"          date,",
+						"          segment,",
+						"          nationality,",
+						"          month_number,",
+						"          year,",
+						"          month_name,",
+						"          total_price",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(upsertIf(true())) ~> AlterRow1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     keys:['priceid'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> Save"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/flower')]",
