@@ -58,46 +58,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "fkpractice",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "fkpractice",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"main": {},
-									"harga": {},
-									"segment": {},
-									"negara": {},
-									"hari": {},
-									"namabulan": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
 						"name": "Copy data1",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "fkpractice",
+								"activity": "joiner",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -384,6 +349,41 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "joiner",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "joiner",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"main": {},
+									"harga": {},
+									"segment": {},
+									"negara": {},
+									"hari": {},
+									"namabulan": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {

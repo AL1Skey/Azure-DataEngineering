@@ -31,46 +31,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "fkpractice",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "fkpractice",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"main": {},
-									"harga": {},
-									"segment": {},
-									"negara": {},
-									"hari": {},
-									"namabulan": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
 						"name": "Copy data1",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "fkpractice",
+								"activity": "joiner",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -357,6 +322,41 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "joiner",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "joiner",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"main": {},
+									"harga": {},
+									"segment": {},
+									"negara": {},
+									"hari": {},
+									"namabulan": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -366,9 +366,9 @@
 				"lastPublishTime": "2024-02-27T10:10:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/fkpractice')]",
 				"[concat(variables('factoryId'), '/datasets/getCombined')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]",
+				"[concat(variables('factoryId'), '/dataflows/joiner')]"
 			]
 		},
 		{
@@ -1143,10 +1143,73 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/fkpractice')]",
+			"name": "[concat(parameters('factoryName'), '/flower')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Data Flow Playground",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "tester"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "delhi_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "sort1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          State_Union_Territory as string,",
+						"          Year as string,",
+						"          Power_Requirement_Net_Crore_Units as string,",
+						"          Availability_Of_Power_Net_Crore_Units as string,",
+						"          Availability_Of_Power_Per_Capita_kiloWatt_Hour as string,",
+						"          Installed_Power_Capacity_MegaWatt as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> tester",
+						"tester filter(State_Union_Territory=='Delhi') ~> filter1",
+						"filter1 sort(asc(Installed_Power_Capacity_MegaWatt, true)) ~> sort1",
+						"sort1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
+				"[concat(variables('factoryId'), '/datasets/delhi_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/joiner')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Join all Dataset into one dataset",
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -1196,7 +1259,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "getCombined",
+								"referenceName": "combined",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -1367,69 +1430,7 @@
 				"[concat(variables('factoryId'), '/datasets/negara')]",
 				"[concat(variables('factoryId'), '/datasets/harifk')]",
 				"[concat(variables('factoryId'), '/datasets/namabulanfk')]",
-				"[concat(variables('factoryId'), '/datasets/getCombined')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/flower')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Data Flow Playground",
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTable1",
-								"type": "DatasetReference"
-							},
-							"name": "tester"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "delhi_dataset",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "filter1"
-						},
-						{
-							"name": "sort1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          State_Union_Territory as string,",
-						"          Year as string,",
-						"          Power_Requirement_Net_Crore_Units as string,",
-						"          Availability_Of_Power_Net_Crore_Units as string,",
-						"          Availability_Of_Power_Per_Capita_kiloWatt_Hour as string,",
-						"          Installed_Power_Capacity_MegaWatt as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> tester",
-						"tester filter(State_Union_Territory=='Delhi') ~> filter1",
-						"filter1 sort(asc(Installed_Power_Capacity_MegaWatt, true)) ~> sort1",
-						"sort1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
-				"[concat(variables('factoryId'), '/datasets/delhi_dataset')]"
+				"[concat(variables('factoryId'), '/datasets/combined')]"
 			]
 		},
 		{
