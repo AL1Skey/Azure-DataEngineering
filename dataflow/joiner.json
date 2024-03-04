@@ -1,6 +1,7 @@
 {
-	"name": "fkpractice",
+	"name": "joiner",
 	"properties": {
+		"description": "Join all Dataset into one dataset",
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
