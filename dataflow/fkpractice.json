@@ -49,10 +49,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "combined",
-						"type": "DatasetReference"
-					},
 					"name": "sink1"
 				}
 			],
@@ -157,7 +153,37 @@
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     format: 'table') ~> sink1"
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          segid = main@segid,",
+				"          natid = main@natid,",
+				"          product,",
+				"          priceid = main@priceid,",
+				"          priceid = harga@priceid,",
+				"          discount_band,",
+				"          units_sold,",
+				"          manufacturing_price,",
+				"          sale_price,",
+				"          gross_sales,",
+				"          discounts,",
+				"          sales,",
+				"          cogs,",
+				"          profit,",
+				"          date = harga@date,",
+				"          segid = segment@segid,",
+				"          segment,",
+				"          natid = negara@natid,",
+				"          nationality,",
+				"          date = hari@date,",
+				"          month_number = hari@month_number,",
+				"          year,",
+				"          month_number = namabulan@month_number,",
+				"          month_name",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
