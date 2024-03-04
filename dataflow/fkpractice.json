@@ -49,6 +49,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "combined",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -67,6 +71,9 @@
 				},
 				{
 					"name": "join5"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -149,15 +156,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join5",
-				"join5 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     store: 'cache',",
-				"     format: 'inline',",
-				"     output: false,",
-				"     saveOrder: 1,",
-				"     mapColumn(",
+				"join5 select(mapColumn(",
 				"          segid = main@segid,",
 				"          natid = main@natid,",
 				"          product,",
@@ -183,7 +182,12 @@
 				"          month_number = namabulan@month_number,",
 				"          month_name",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
