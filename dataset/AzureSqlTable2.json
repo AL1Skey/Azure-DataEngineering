@@ -7,7 +7,11 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "fkoutput"
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }
