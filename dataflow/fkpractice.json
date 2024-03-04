@@ -50,7 +50,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "combined",
+						"referenceName": "getCombined",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -188,6 +188,27 @@
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          segid,",
+				"          natid,",
+				"          product,",
+				"          priceid,",
+				"          discount_band,",
+				"          units_sold,",
+				"          manufacturing_price,",
+				"          sale_price,",
+				"          gross_sales,",
+				"          discounts,",
+				"          sales,",
+				"          cogs,",
+				"          profit,",
+				"          date,",
+				"          segment,",
+				"          nationality,",
+				"          month_number,",
+				"          year,",
+				"          month_name",
+				"     ),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
