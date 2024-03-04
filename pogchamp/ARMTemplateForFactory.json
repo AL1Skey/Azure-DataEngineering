@@ -64,6 +64,299 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "fkpractice",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "segid",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "segid",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "natid",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "natid",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "product",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "product",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "priceid",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "priceid",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "discount_band",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "discount_band",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "units_sold",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "units_sold",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "manufacturing_price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "manufacturing_price",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "sale_price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "sale_price",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "gross_sales",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "gross_sales",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "discounts",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "discounts",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "sales",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "sales",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "cogs",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "cogs",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "profit",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "profit",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "date",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "nationality",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "nationality",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "month_number",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "month_number",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "year",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "year",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "month_name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "month_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "getCombined",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -73,7 +366,9 @@
 				"lastPublishTime": "2024-02-27T10:10:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/fkpractice')]"
+				"[concat(variables('factoryId'), '/dataflows/fkpractice')]",
+				"[concat(variables('factoryId'), '/datasets/getCombined')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
 			]
 		},
 		{
@@ -396,7 +691,10 @@
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
-				"typeProperties": {}
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "fkoutput"
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
@@ -898,7 +1196,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "combined",
+								"referenceName": "getCombined",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -1035,7 +1333,29 @@
 						"select1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          segid,",
+						"          natid,",
+						"          product,",
+						"          priceid,",
+						"          discount_band,",
+						"          units_sold,",
+						"          manufacturing_price,",
+						"          sale_price,",
+						"          gross_sales,",
+						"          discounts,",
+						"          sales,",
+						"          cogs,",
+						"          profit,",
+						"          date,",
+						"          segment,",
+						"          nationality,",
+						"          month_number,",
+						"          year,",
+						"          month_name",
+						"     ),",
+						"     partitionBy('hash', 1)) ~> sink1"
 					]
 				}
 			},
@@ -1046,7 +1366,7 @@
 				"[concat(variables('factoryId'), '/datasets/negara')]",
 				"[concat(variables('factoryId'), '/datasets/harifk')]",
 				"[concat(variables('factoryId'), '/datasets/namabulanfk')]",
-				"[concat(variables('factoryId'), '/datasets/combined')]"
+				"[concat(variables('factoryId'), '/datasets/getCombined')]"
 			]
 		},
 		{

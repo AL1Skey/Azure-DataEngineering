@@ -121,7 +121,10 @@
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
-				"typeProperties": {}
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "fkoutput"
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
@@ -799,7 +802,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "combined",
+								"referenceName": "getCombined",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -936,7 +939,29 @@
 						"select1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          segid,",
+						"          natid,",
+						"          product,",
+						"          priceid,",
+						"          discount_band,",
+						"          units_sold,",
+						"          manufacturing_price,",
+						"          sale_price,",
+						"          gross_sales,",
+						"          discounts,",
+						"          sales,",
+						"          cogs,",
+						"          profit,",
+						"          date,",
+						"          segment,",
+						"          nationality,",
+						"          month_number,",
+						"          year,",
+						"          month_name",
+						"     ),",
+						"     partitionBy('hash', 1)) ~> sink1"
 					]
 				}
 			},
@@ -947,7 +972,7 @@
 				"[concat(variables('factoryId'), '/datasets/negara')]",
 				"[concat(variables('factoryId'), '/datasets/harifk')]",
 				"[concat(variables('factoryId'), '/datasets/namabulanfk')]",
-				"[concat(variables('factoryId'), '/datasets/combined')]"
+				"[concat(variables('factoryId'), '/datasets/getCombined')]"
 			]
 		},
 		{
