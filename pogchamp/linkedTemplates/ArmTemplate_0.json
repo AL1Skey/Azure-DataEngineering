@@ -121,10 +121,7 @@
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
-				"typeProperties": {
-					"schema": "fkpractice",
-					"table": "dataset"
-				}
+				"typeProperties": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
@@ -823,6 +820,9 @@
 						},
 						{
 							"name": "join5"
+						},
+						{
+							"name": "select1"
 						}
 					],
 					"scriptLines": [
@@ -905,11 +905,38 @@
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> join5",
-						"join5 sink(allowSchemaDrift: true,",
+						"join5 select(mapColumn(",
+						"          segid = main@segid,",
+						"          natid = main@natid,",
+						"          product,",
+						"          priceid = main@priceid,",
+						"          priceid = harga@priceid,",
+						"          discount_band,",
+						"          units_sold,",
+						"          manufacturing_price,",
+						"          sale_price,",
+						"          gross_sales,",
+						"          discounts,",
+						"          sales,",
+						"          cogs,",
+						"          profit,",
+						"          date = harga@date,",
+						"          segid = segment@segid,",
+						"          segment,",
+						"          natid = negara@natid,",
+						"          nationality,",
+						"          date = hari@date,",
+						"          month_number = hari@month_number,",
+						"          year,",
+						"          month_number = namabulan@month_number,",
+						"          month_name",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     format: 'table') ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},
