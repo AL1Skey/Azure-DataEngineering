@@ -13,6 +13,164 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/cleaner')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "remove unnecessary columns, modified the data type and add columns",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "datatypemod",
+							"description": "Modifies Data Type to expected data type"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable3",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          segid as string,",
+						"          natid as string,",
+						"          product as string,",
+						"          priceid as string,",
+						"          discount_band as string,",
+						"          units_sold as integer,",
+						"          manufacturing_price as float,",
+						"          sale_price as float,",
+						"          gross_sales as float,",
+						"          discounts as float,",
+						"          sales as float,",
+						"          cogs as float,",
+						"          profit as float,",
+						"          date as date,",
+						"          segment as string,",
+						"          nationality as string,",
+						"          month_number as integer,",
+						"          year as integer,",
+						"          month_name as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> datatypemod",
+						"datatypemod derive(total_price = manufacturing_price + sale_price) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          segment,",
+						"          nationality,",
+						"          product,",
+						"          discount_band,",
+						"          units_sold,",
+						"          manufacturing_price,",
+						"          sale_price,",
+						"          gross_sales,",
+						"          discounts,",
+						"          sales,",
+						"          cogs,",
+						"          profit,",
+						"          date,",
+						"          month_number,",
+						"          year,",
+						"          month_name,",
+						"          total_price",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/flower')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Data Flow Playground",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "tester"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "delhi_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "sort1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          State_Union_Territory as string,",
+						"          Year as string,",
+						"          Power_Requirement_Net_Crore_Units as string,",
+						"          Availability_Of_Power_Net_Crore_Units as string,",
+						"          Availability_Of_Power_Per_Capita_kiloWatt_Hour as string,",
+						"          Installed_Power_Capacity_MegaWatt as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> tester",
+						"tester filter(State_Union_Territory=='Delhi') ~> filter1",
+						"filter1 sort(asc(Installed_Power_Capacity_MegaWatt, true)) ~> sort1",
+						"sort1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/joiner')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -421,7 +579,8 @@
 				"lastPublishTime": "2024-02-27T10:10:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/joiner')]"
+				"[concat(variables('factoryId'), '/dataflows/joiner')]",
+				"[concat(variables('factoryId'), '/dataflows/cleaner')]"
 			]
 		},
 		{
@@ -467,7 +626,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-24T10:56:53Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/flower')]"
+			]
 		}
 	]
 }
