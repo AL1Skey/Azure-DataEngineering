@@ -379,8 +379,6 @@
 					{
 						"name": "cleaner",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Copy data1",
@@ -404,7 +402,7 @@
 								"parameters": {},
 								"datasetParameters": {
 									"datatypemod": {},
-									"Save": {}
+									"sink1": {}
 								}
 							},
 							"staging": {},
