@@ -20,7 +20,7 @@
 						"referenceName": "AzureSqlTable2",
 						"type": "DatasetReference"
 					},
-					"name": "Save"
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -29,9 +29,6 @@
 				},
 				{
 					"name": "select1"
-				},
-				{
-					"name": "AlterRow1"
 				}
 			],
 			"scriptLines": [
@@ -62,10 +59,9 @@
 				"     format: 'table') ~> datatypemod",
 				"datatypemod derive(total_price = manufacturing_price + sale_price) ~> derivedColumn1",
 				"derivedColumn1 select(mapColumn(",
-				"          segid,",
-				"          natid,",
+				"          segment,",
+				"          nationality,",
 				"          product,",
-				"          priceid,",
 				"          discount_band,",
 				"          units_sold,",
 				"          manufacturing_price,",
@@ -76,8 +72,6 @@
 				"          cogs,",
 				"          profit,",
 				"          date,",
-				"          segment,",
-				"          nationality,",
 				"          month_number,",
 				"          year,",
 				"          month_name,",
@@ -85,9 +79,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 alterRow(upsertIf(true()),",
-				"     insertIf(true())) ~> AlterRow1",
-				"AlterRow1 sink(allowSchemaDrift: true,",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -97,7 +89,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> Save"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
